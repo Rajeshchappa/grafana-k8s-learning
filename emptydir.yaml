@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-demo
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-demo
+  template:
+    metadata:
+      labels:
+        app: nginx-demo
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html-volume
+              mountPath: /usr/share/nginx/html
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo '<h1>This is Rajesh website (emptyDir)</h1>' > /usr/share/nginx/html/index.html;
+              nginx -g "daemon off;"
+      volumes:
+        - name: html-volume
+          emptyDir: {}
